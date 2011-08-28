@@ -84,6 +84,8 @@ class Mercury < Sinatra::Application
     end
     data = JSON.parse(params[:data])
     File.open("/tmp/authorized_keys", "w") { |file_out| file_out.write(data["authfile"]) }
+    status 200
+    body "exported"
   end
 
   private
