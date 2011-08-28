@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+
+REPOSITORY_BASENAME=$(basename "$PWD")
+REPOSITORY_BASENAME=${REPOSITORY_BASENAME%.git}
+while read oldrev newrev refname
+do
+	curl -H "TOKEN:a1c116090cae590788ae2b9421ef7dd7263a5ac8" -H "USERNAME:jupiter_sands" -X POST http://localhost:8081/api/git/push?repository=$REPOSITORY_BASENAME&rev=$newrev
+done
