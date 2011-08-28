@@ -2,7 +2,7 @@
 ENV['RACK_ENV'] = "development" unless ENV['RACK_ENV'] != nil
 require "rubygems"
 require "bundler/setup"
-require "FileUtils"
+require "fileutils"
 
 # get all the gems in
 Bundler.require(:default)
