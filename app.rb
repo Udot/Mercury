@@ -10,6 +10,15 @@ Bundler.require(:default)
 class Mercury < Sinatra::Application
 	RailsConfig.load_and_set_settings("./config/settings.yml", "./config/settings/#{settings.environment.to_s}.yml")
 
+  configure do
+    LOGGER = Logger.new("log/#{settings.environment.to_s}.log")
+  end
+  helpers do
+    def logger
+      LOGGER
+    end
+  end
+
   get "/alive" do
     if not api_auth(env)
       # the git lib gateway doesn't have a proper api username and/or token
@@ -67,6 +76,7 @@ class Mercury < Sinatra::Application
       body "Unauthorized / Authentication failed"
       return
     end
+    logger.info("data in")
     if not params[:data]
       status 400
       body "Missing data"
