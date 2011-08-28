@@ -10,6 +10,18 @@ Bundler.require(:default)
 class Mercury < Sinatra::Application
 	RailsConfig.load_and_set_settings("./config/settings.yml", "./config/settings/#{settings.environment.to_s}.yml")
 
+  get "/alive" do
+    if not api_auth(env)
+      # the git lib gateway doesn't have a proper api username and/or token
+      status 401
+      body "Unauthorized / Authentication failed"
+      return
+    end
+    status 200
+    st_answ = {"status" => "running"}.to_json
+    body st_answ
+  end
+
   post '/repositories/create/?' do
     if not api_auth(env)
       # the git lib gateway doesn't have a proper api username and/or token
