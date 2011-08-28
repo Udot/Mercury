@@ -113,6 +113,7 @@ class Mercury < Sinatra::Application
       "objects" => { "info" => nil, "pack" => nil },
       "refs" => { "heads" => nil, "tags" => nil }}
     files = ["HEAD", "config", "description"]
+    hooks = ["post-receive"]
 
     dot_git = Pathname(repository)
 
@@ -124,6 +125,13 @@ class Mercury < Sinatra::Application
     files.each do |l_file|
       if !File.exist?("#{dot_git}/#{l_file}")
         File.open("#{dot_git}/#{l_file}", "a") do |file_out|
+          IO.foreach("#{app_dir}/config/templates/#{l_file}") { |w| file_out.puts(w) }
+        end
+      end
+    end
+    hooks.each do |h_file|
+      if !File.exist?("#{dot_git}/#{l_file}")
+        File.open("#{dot_git}/hooks/#{l_file}", "a") do |file_out|
           IO.foreach("#{app_dir}/config/templates/#{l_file}") { |w| file_out.puts(w) }
         end
       end
