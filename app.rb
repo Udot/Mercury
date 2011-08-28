@@ -128,6 +128,7 @@ class Mercury < Sinatra::Application
         end
       end
     end
+    FileUtils.chmod_R(770, repository)
     return true
   end # def git_repo_init
 
