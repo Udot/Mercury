@@ -67,6 +67,11 @@ class Mercury < Sinatra::Application
       body "Unauthorized / Authentication failed"
       return
     end
+    if not params[:data]
+      status 400
+      body "Missing data"
+      return
+    end
     data = JSON.parse(params[:data])
     File.open("/tmp/authorized_keys", "w") { |file_out| file_out.write(data["authfile"]) }
   end
