@@ -1,4 +1,5 @@
 # encoding: utf-8
+ENV['RACK_ENV'] = "development" unless ENV['RACK_ENV'] != nil
 require "rubygems"
 require "bundler/setup"
 require "FileUtils"
@@ -7,7 +8,7 @@ require "FileUtils"
 Bundler.require(:default)
 
 class Mercury < Sinatra::Application
-	RailsConfig.load_and_set_settings("./config/settings.yml")
+	RailsConfig.load_and_set_settings("./config/settings.yml", "./config/settings/#{settings.environment.to_s}.yml")
 
   post '/repositories/create/?' do
     if not api_auth(env)

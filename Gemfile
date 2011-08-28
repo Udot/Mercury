@@ -11,12 +11,10 @@ group :production do
 end
 #gem "resque"
 gem "redis"
-gem "data_mapper"
-gem "dm-mysql-adapter"
 
 gem "rails_config"
 
-require "json"
+gem "json"
 # Use unicorn as the web server
 gem 'unicorn'
 
@@ -26,3 +24,6 @@ gem "shotgun", :group => :development
 gem 'ruby-debug19', :require => 'ruby-debug'
 
 gem 'nokogiri'
+
+# deploy
+gem "capistrano", :group => [:development, :test]
