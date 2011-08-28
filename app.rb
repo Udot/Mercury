@@ -60,6 +60,17 @@ class Mercury < Sinatra::Application
     body answer
   end
 
+  post "/keys" do
+    if not api_auth(env)
+      # the git lib gateway doesn't have a proper api username and/or token
+      status 401
+      body "Unauthorized / Authentication failed"
+      return
+    end
+    data = JSON.parse(params[:data])
+    File.open("/tmp/authorized_keys", "w") { |file_out| file_out.write(data["authfile"]) }
+  end
+
   private
   def api_auth(the_env)
     token = the_env['HTTP_TOKEN'] || the_env['TOKEN']
