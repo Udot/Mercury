@@ -18,6 +18,8 @@ gem "json"
 # Use unicorn as the web server
 gem 'unicorn'
 
+gem "remote_syslog_logger"
+
 # keep running server up to date
 gem "shotgun", :group => :development
 

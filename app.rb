@@ -3,6 +3,7 @@ ENV['RACK_ENV'] = "development" unless ENV['RACK_ENV'] != nil
 require "rubygems"
 require "bundler/setup"
 require "fileutils"
+require_relative 'lib/remote_syslog'
 
 # get all the gems in
 Bundler.require(:default)
@@ -10,7 +11,13 @@ Bundler.require(:default)
 class Mercury < Sinatra::Application
 	RailsConfig.load_and_set_settings("./config/settings.yml", "./config/settings/#{settings.environment.to_s}.yml")
 
-  configure do
+	enable :logging
+
+  configure :production do
+    LOGGER = RemoteSyslog.new(Settings.remote_log_host,Settings.remote_log_port)
+    use Rack::CommonLogger, LOGGER
+  end
+  configure :development do
     LOGGER = Logger.new("log/#{settings.environment.to_s}.log")
   end
   helpers do

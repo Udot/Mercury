@@ -6,8 +6,8 @@ worker_processes 1
 
 # Help ensure your application will always spawn in the symlinked
 # "current" directory that Capistrano sets up.
-working_directory "/var/www/backoffice/mercury_production/current"
-shared_dir = "/var/www/backoffice/mercury_production/shared"
+working_directory "/var/www/hosts/mercury/current"
+shared_dir = "/var/www/hosts/mercury/shared"
 # listen on both a Unix domain socket and a TCP port,
 # we use a shorter backlog for quicker failover when busy
 listen 8082, :tcp_nopush => true
