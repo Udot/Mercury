@@ -1,4 +1,5 @@
 bundler/*
 log/*
 lib/deploy.rb
-config/settings/*
+config/settings/development.yml
+config/settings/production.yml
