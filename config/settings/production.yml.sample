@@ -1,2 +1,7 @@
 remote_log_host: somehost
 remote_log_port: someport
+harry_token: sometoken
+harry_host: someotherhost
+harry_port: aport
+git_repository: git@somewhere
+app_name: mercury
