@@ -1,0 +1,3 @@
+api:
+  token: sometoken
+  username: user_name
