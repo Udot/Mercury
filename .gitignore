@@ -1,3 +1,4 @@
 bundler/*
 log/*
 lib/deploy.rb
+config/settings/*
