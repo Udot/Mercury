@@ -1,7 +1,7 @@
 require "remote_syslog_logger"
 class RemoteSyslog
   def initialize(host, port)
-    @logger = RemoteSyslogLogger.new(host, port, {:program => 'git_front'})
+    @logger = RemoteSyslogLogger.new(host, port, {:program => 'mercury'})
   end
 
   def info(msg)
