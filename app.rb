@@ -134,7 +134,12 @@ class Mercury < Sinatra::Application
     if File.exist?(repository_path)
       return false
     end
-    FileUtils.mkdir_p(repository_path)
+    begin
+      FileUtils.mkdir_p(repository_path)
+    rescue Errno::EACCES
+      logger.info("permission denied #{repository_path}")
+      return false
+    end
     return true
   end
 
@@ -164,9 +169,9 @@ class Mercury < Sinatra::Application
       end
     end
     hooks.each do |h_file|
-      if !File.exist?("#{dot_git}/#{l_file}")
-        File.open("#{dot_git}/hooks/#{l_file}", "a") do |file_out|
-          IO.foreach("#{app_dir}/config/templates/#{l_file}") { |w| file_out.puts(w) }
+      if !File.exist?("#{dot_git}/#{h_file}")
+        File.open("#{dot_git}/hooks/#{h_file}", "a") do |file_out|
+          IO.foreach("#{app_dir}/config/templates/#{h_file}") { |w| file_out.puts(w) }
         end
       end
     end
