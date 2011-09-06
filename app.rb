@@ -145,7 +145,7 @@ class Mercury < Sinatra::Application
 
   def repo_init(repository)
     app_dir = File.expand_path(File.dirname(__FILE__))
-    File.umask(0001)
+    File.umask(0007)
     dirs = {
       "hooks" => nil,
       "info" => nil,
@@ -175,8 +175,6 @@ class Mercury < Sinatra::Application
         end
       end
     end
-    FileUtils.chown_R("git","www-data", repository)
-    FileUtils.chmod_R(770, repository)
     return true
   end # def git_repo_init
 
@@ -187,6 +185,7 @@ class Mercury < Sinatra::Application
   # if subdirs need to be created in those then the key points to another hash
   def l_mkdirs(root, dir_hash)
     dir_hash.each_key do |s_dir|
+      File.umask(0007)
       Dir.mkdir(root + s_dir) if !(root + s_dir).exist?
       l_mkdirs(root + s_dir, dir_hash[s_dir]) if dir_hash[s_dir]
     end
