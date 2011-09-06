@@ -176,7 +176,7 @@ class Mercury < Sinatra::Application
     File.open("#{dot_git}/hooks/post-receive", "a") do |file_out|
       file_out.puts(post_recv_hook)
     end
-    FileUtils.chmod(660, "#{app_dir}/config/templates/post-receive")
+    FileUtils.chmod(770, "#{app_dir}/config/templates/post-receive")
     return true
   end # def git_repo_init
 
