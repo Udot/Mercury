@@ -5,5 +5,5 @@ REPOSITORY_BASENAME=$(basename "$PWD")
 REPOSITORY_BASENAME=${REPOSITORY_BASENAME%.git}
 while read oldrev newrev refname
 do
-	curl -s -H "TOKEN:7917d64374911eaa686a80bc66eb972146c3959a" -H "USERNAME:shell_user" -X POST http://localhost:8081/api/git/push?repository=$REPOSITORY_BASENAME&rev=$newrev
+	REQUEST_TO_FRONT
 done
