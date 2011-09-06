@@ -175,6 +175,7 @@ class Mercury < Sinatra::Application
         end
       end
     end
+    FileUtils.chown_R("git","www-data")
     FileUtils.chmod_R(770, repository)
     return true
   end # def git_repo_init
