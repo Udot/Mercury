@@ -4,6 +4,8 @@ Mercury is a git repository setup module. It's Sinatra app that wait for queries
 
 Mercury doesn't have much brain and all the data about repository creation (paths, names, etc...) must come from another app.
 
+It also setup a post receive hook to update repository status on the main web interface.
+
 ## License
 
 Mercury is published under the MIT license, see LICENSE file.
