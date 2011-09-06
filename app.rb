@@ -62,6 +62,32 @@ class Mercury < Sinatra::Application
     end
   end
 
+  post '/repositories/destroy/?' do
+    if not api_auth(env)
+      # the git lib gateway doesn't have a proper api username and/or token
+      status 401
+      body "Unauthorized / Authentication failed"
+      return
+    end
+    data = params
+    if File.exist?(data["path"])
+      FileUtils.rm_rf(data["path"])
+      if not File.exist?(data["path"])
+        status 200
+        body "Repository deleted"
+        return
+      else
+        status 500
+        body "Could not destroy repository"
+        return
+      end
+    else
+      status 200
+      body "Repository doesn't exist"
+      return
+    end
+  end
+
   post "/repositories/status" do
     if not api_auth(env)
       # the git lib gateway doesn't have a proper api username and/or token
