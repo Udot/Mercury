@@ -99,6 +99,7 @@ class Mercury < Sinatra::Application
   def api_auth(the_env)
     token = the_env['HTTP_TOKEN'] || the_env['TOKEN']
     username = the_env['HTTP_USERNAME'] || the_env['USERNAME']
+    return false unless (token != nil) && (username != nil)
     return false if (Settings.api.token != token) || (Settings.api.username != username)
     return true
   end
