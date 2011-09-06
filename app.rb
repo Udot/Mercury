@@ -170,7 +170,7 @@ class Mercury < Sinatra::Application
     end
     # create post receive hook to send git front last rev data
     # curl -s -H "TOKEN:tokenstring" -H "USERNAME:shell_user" -X POST http://localhost:8080/api/git/push?repository=$REPOSITORY_BASENAME&rev=$newrev
-    curl_string = "curl -s -H \"TOKEN:#{Settings.egg_api.token}\" -H \"USERNAME:#{Settings.egg_api.username}\" -X POST http://#{Settings.egg_api.hostname}:#{Settings.egg_api.port}/api/git/push?repository=$REPOSITORY_BASENAME&rev=$newrev"
+    curl_string = "curl -s -H \"TOKEN:#{Settings.egg_api.token}\" -H \"USERNAME:#{Settings.egg_api.username}\" -X POST \"http://#{Settings.egg_api.hostname}:#{Settings.egg_api.port}/api/git/push?repository=$REPOSITORY_BASENAME&rev=$newrev\""
     post_recv_hook = IO.read("#{app_dir}/config/templates/post-receive")
     post_recv_hook.gsub!("REQUEST_TO_FRONT",curl_string)
     File.open("#{dot_git}/hooks/post-receive", "a") do |file_out|
