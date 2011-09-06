@@ -71,7 +71,7 @@ class Mercury < Sinatra::Application
     end
     data = params
     if File.exist?(data["path"])
-      FileUtils.rm_rf(data["path"])
+      FileUtils.mv(data["path"], Settings.root + "/.trash/#{Time.now.strftime("%d%m%Y-%H%M%S")}.old")
       if not File.exist?(data["path"])
         status 200
         body "Repository deleted"
