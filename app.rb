@@ -17,34 +17,33 @@ class Mercury < Sinatra::Application
     LOGGER = RemoteSyslog.new(Settings.remote_log_host,Settings.remote_log_port)
     use Rack::CommonLogger, LOGGER
   end
+  
   configure :development do
     LOGGER = Logger.new("log/#{settings.environment.to_s}.log")
   end
+  
   helpers do
     def logger
       LOGGER
     end
   end
 
-  get "/alive" do
+  before do
     if not api_auth(env)
       # the git lib gateway doesn't have a proper api username and/or token
       status 401
       body "Unauthorized / Authentication failed"
       return
     end
+  end
+  
+  get "/alive" do
     status 200
     st_answ = {"status" => "running"}.to_json
     body st_answ
   end
 
   post '/repositories/create/?' do
-    if not api_auth(env)
-      # the git lib gateway doesn't have a proper api username and/or token
-      status 401
-      body "Unauthorized / Authentication failed"
-      return
-    end
     data = params
     if not init_store(data["path"])
       status 409
@@ -63,12 +62,6 @@ class Mercury < Sinatra::Application
   end
 
   post '/repositories/destroy/?' do
-    if not api_auth(env)
-      # the git lib gateway doesn't have a proper api username and/or token
-      status 401
-      body "Unauthorized / Authentication failed"
-      return
-    end
     data = params
     if File.exist?(data["path"])
       FileUtils.mv(data["path"], Settings.root + "/.trash/#{Time.now.strftime("%d%m%Y-%H%M%S")}.old")
@@ -89,12 +82,6 @@ class Mercury < Sinatra::Application
   end
 
   post "/repositories/status" do
-    if not api_auth(env)
-      # the git lib gateway doesn't have a proper api username and/or token
-      status 401
-      body "Unauthorized / Authentication failed"
-      return
-    end
     data = params
     answer = {"status" => "loose"}.to_json
     answer = {"status" => "created"}.to_json if File.exist?(data["path"])
@@ -103,12 +90,6 @@ class Mercury < Sinatra::Application
   end
 
   post "/keys" do
-    if not api_auth(env)
-      # the git lib gateway doesn't have a proper api username and/or token
-      status 401
-      body "Unauthorized / Authentication failed"
-      return
-    end
     logger.info("data in")
     if not params[:data]
       status 400
@@ -122,6 +103,7 @@ class Mercury < Sinatra::Application
   end
 
   private
+  
   def api_auth(the_env)
     token = the_env['HTTP_TOKEN'] || the_env['TOKEN']
     username = the_env['HTTP_USERNAME'] || the_env['USERNAME']
@@ -170,7 +152,7 @@ class Mercury < Sinatra::Application
     end
     # create post receive hook to send git front last rev data
     # curl -s -H "TOKEN:tokenstring" -H "USERNAME:shell_user" -X POST http://localhost:8080/api/git/push?repository=$REPOSITORY_BASENAME&rev=$newrev
-    curl_string = "curl -s -H \"TOKEN:#{Settings.egg_api.token}\" -H \"USERNAME:#{Settings.egg_api.username}\" -X POST http://#{Settings.egg_api.hostname}:#{Settings.egg_api.port}/api/git/push?repository=$REPOSITORY_BASENAME&rev=$newrev"
+    curl_string = "curl -s -H \"TOKEN:#{Settings.egg_api.token}\" -H \"USERNAME:#{Settings.egg_api.username}\" -X POST \"http://#{Settings.egg_api.hostname}:#{Settings.egg_api.port}/api/git/push?repository=$REPOSITORY_BASENAME&rev=$newrev\""
     post_recv_hook = IO.read("#{app_dir}/config/templates/post-receive")
     post_recv_hook.gsub!("REQUEST_TO_FRONT",curl_string)
     File.open("#{dot_git}/hooks/post-receive", "a") do |file_out|
@@ -192,4 +174,5 @@ class Mercury < Sinatra::Application
       l_mkdirs(root + s_dir, dir_hash[s_dir]) if dir_hash[s_dir]
     end
   end
+  
 end
