@@ -3,3 +3,4 @@ log/*
 lib/deploy.rb
 config/settings/development.yml
 config/settings/production.yml
+doc/readme.private.markdown
