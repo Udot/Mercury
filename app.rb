@@ -4,21 +4,45 @@ require "rubygems"
 require "bundler/setup"
 require "fileutils"
 require_relative 'lib/remote_syslog'
+require_relative 'lib/log'
 
 # get all the gems in
 Bundler.require(:default)
 
+
+class MercuryAuthentication < Sinatra::Base
+
+  before do
+    pass if request.path_info == '401' || api_auth(env)
+    throw :halt, [401, "Unauthorized / Authentication failed"]
+  end
+  protected
+  def api_auth(the_env)
+    token = the_env['HTTP_TOKEN'] || the_env['TOKEN']
+    username = the_env['HTTP_USERNAME'] || the_env['USERNAME']
+    return false unless (token != nil) && (username != nil)
+    return false if (Settings.api.token != token) || (Settings.api.username != username)
+    return true
+  end
+  
+end
+
+use MercuryAuthentication
+
 class Mercury < Sinatra::Application
 	RailsConfig.load_and_set_settings("./config/settings.yml", "./config/settings/#{settings.environment.to_s}.yml")
 
-	enable :logging
+#	enable :logging
 
   configure :production do
     LOGGER = RemoteSyslog.new(Settings.remote_log_host,Settings.remote_log_port)
+    use MercuryAuthentication
     use Rack::CommonLogger, LOGGER
+
   end
   
   configure :development do
+    use MercuryAuthentication
     LOGGER = Logger.new("log/#{settings.environment.to_s}.log")
   end
   
@@ -28,14 +52,6 @@ class Mercury < Sinatra::Application
     end
   end
 
-  before do
-    if not api_auth(env)
-      # the git lib gateway doesn't have a proper api username and/or token
-      status 401
-      body "Unauthorized / Authentication failed"
-      return
-    end
-  end
   
   get "/alive" do
     status 200
@@ -60,7 +76,6 @@ class Mercury < Sinatra::Application
       body answ
     end
   end
-
   post '/repositories/destroy/?' do
     data = params
     if File.exist?(data["path"])
@@ -104,13 +119,6 @@ class Mercury < Sinatra::Application
 
   private
   
-  def api_auth(the_env)
-    token = the_env['HTTP_TOKEN'] || the_env['TOKEN']
-    username = the_env['HTTP_USERNAME'] || the_env['USERNAME']
-    return false unless (token != nil) && (username != nil)
-    return false if (Settings.api.token != token) || (Settings.api.username != username)
-    return true
-  end
 
   def init_store(repository_path)
     if File.exist?(repository_path)
