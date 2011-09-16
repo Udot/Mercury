@@ -4,6 +4,9 @@ lib/deploy.rb
 config/settings/development.yml
 config/settings/production.yml
 doc/readme.private.markdown
+config/settings.yml
+config/settings/*.yml
+
 
 .rvmrc
 .DS_Store
