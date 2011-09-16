@@ -3,7 +3,8 @@ ENV['RACK_ENV'] = "development" unless ENV['RACK_ENV'] != nil
 require "rubygems"
 require "bundler/setup"
 require "fileutils"
-require_relative 'lib/remote_syslog'
+
+require_relative ENV['RACK_ENV']=='production'?'lib/remote_syslog':'lib/log'
 
 # get all the gems in
 Bundler.require(:default)
