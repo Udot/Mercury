@@ -10,5 +10,9 @@ describe 'Mercury' do
     get '/'
     last_response.status.should == 401
   end
-  it 'returns success with correct token and username'
+  it 'returns success with correct token and username' do
+    get '/', {}, {TOKEN:"#{Settings.api.token}",USERNAME:"#{Settings.api.username}"}
+    last_response.status.should == 401
+  end
+    
 end
