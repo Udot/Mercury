@@ -14,6 +14,11 @@ gem "redis"
 
 gem "rails_config"
 
+group :development, :test do
+gem "rspec", ">= 2"
+gem "rack-test"
+
+end
 gem "json"
 # Use unicorn as the web server
 gem 'unicorn'
